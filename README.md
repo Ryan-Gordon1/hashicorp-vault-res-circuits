@@ -1,5 +1,11 @@
 # Dockerized-Circuits-with-HashiCorpVault
 
+## Intro
+This repository is a guide on how you can use Hashicorp Vault to provide credentials to resilient_circuits using the keyring python package. 
+The guide focuses on putting all of the above into a container meaning it can be built once and deployed multiple times. 
+
+Contributions welcome from others.
+
 When deploying Integration servers with resilient-circuits. There exists a need to encrypt credentials needed by our integrations so that there is no sensitive credentials left in plain text on the Integration Server. Keyring is what we use to provide this functionality but depending on the platform you use, you might find yourself without a default backend to depend on or alternatively you may want a more secure backend than what is offered. Here is a resource from the IBM knowledge centre giving a little more info on [using encrypted keys](https://www.ibm.com/support/knowledgecenter/en/SSBRUQ_34.0.0/com.ibm.resilient.doc/integrations/keyring.htm)
 
 
@@ -10,6 +16,15 @@ The following guide steps you through creating a docker based integration server
 + A keyring backend which can be used on any platform that python uses - some OS platforms will have a default keyring, some will not. Ideally we shoud leverage a one-for-all backend 
 
 ## Craig Roberts & Ryan Gordon
+
+## Table of Contents 
+
+  - [Docker Integration Image setup](#docker-integration-image-setup)
+  - [Test run with keyring in the container](#test-run-with-keyring-in-the-container)
+  - [Hashicorp Vault setup](#hashicorp-vault-setup)
+  - [Vault as a Docker container](#vault-as-a-docker-container)
+  - [Creating a secrets engine for Keyring](#creating-a-secrets-engine-for-keyring)
+  - [Appendices](#appendices)
 
 
 ### Docker Integration Image setup 
@@ -53,7 +68,7 @@ One solution offered for such a task is [Vault by Hashicorp](link-to-vault).
 In a nutshell, vault can be used to create a key-value secrets engine which we will then use as a keyring backend.
 A python package is needed to make Vault compatible with our keyring package and can be found [here](https://pypi.org/project/keyring-vault-backend/).
 
-The above package encapsulates the API calls needed to authenticate to and use Vault within a keyring backend class. In addition to installing the package, depending on your enviroonment you may need to add some paths to the keyring config file. 
+The above package encapsulates the API calls needed to authenticate to and use Vault within a keyring backend class. In addition to installing the package, depending on your environment you may need to add some paths to the keyring config file. 
 To edit the keyring config file, locate the `keyringrc.cfg` file which is normally at this path on UNIX `~/.local/share/python_keyring/keyringrc.cfg`.
 If you cannot find the keyring config file in this location, provided the python package is installed, you can find the location with this command `python -c "import keyring.util.platform_; print(keyring.util.platform_.config_root())"`
 
@@ -75,7 +90,7 @@ Note: If you choose to use the Vault docker container for testing, evaluate whet
 
 ### Creating a secrets engine for Keyring
 After setting up Vault either as a Docker container or a separate deployment, we need to create a secrets engine which will store the secrets we use with keyring. 
-Navagate to your Vault instance, login and you should be directed to the secrets engine page. 
+Navigate to your Vault instance, login and you should be directed to the secrets engine page. 
 
 ![Vault Engines Page Image](./screenshots/vault-engines-page.png "The Initial Page you will see for engines")
 
